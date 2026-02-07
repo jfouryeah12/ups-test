@@ -2,6 +2,7 @@ import {
   RateRequestSchema,
   type RateQuote,
   type RateRequest,
+  type Address,
 } from "../../domain/models";
 import { CarrierError } from "../../errors/CarrierError";
 import { config } from "../../config";
@@ -91,9 +92,9 @@ export class UpsRateClient {
       });
     }
 
-    let body: any;
+    let body: UpsRateResponse | undefined;
     try {
-      body = JSON.parse(res.jsonText);
+      body = JSON.parse(res.jsonText) as UpsRateResponse;
     } catch {
       throw new CarrierError({
         code: "MALFORMED_RESPONSE",
@@ -116,7 +117,7 @@ export class UpsRateClient {
       });
     }
 
-    return rated.map((r: any) => ({
+    return rated.map((r) => ({
       carrier: "UPS",
       serviceLevel: String(r?.Service?.Code ?? "UNKNOWN"),
       totalCharge: {
@@ -130,7 +131,18 @@ export class UpsRateClient {
   }
 }
 
-function mapAddr(a: any) {
+// Minimal typing (incomplete, just what we access)
+interface UpsRateResponse {
+  RateResponse: {
+    RatedShipment: Array<{
+      Service: { Code: string };
+      TotalCharges: { CurrencyCode: string; MonetaryValue: string };
+      GuaranteedDelivery?: { BusinessDaysInTransit?: string };
+    }>;
+  };
+}
+
+function mapAddr(a: Address) {
   return {
     AddressLine: [a.street1, a.street2].filter(Boolean),
     City: a.city,

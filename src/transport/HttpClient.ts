@@ -23,8 +23,8 @@ export class HttpClient {
 
       const jsonText = await res.text();
       return { status: res.status, jsonText };
-    } catch (e: any) {
-      if (e?.name === "AbortError") {
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name === "AbortError") {
         throw new CarrierError({
           code: "TIMEOUT",
           message: "Network timeout",

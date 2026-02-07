@@ -36,7 +36,7 @@ export class UpsAuthClient {
       });
     }
 
-    let parsed: any;
+    let parsed: { access_token?: string; expires_in?: number } | undefined;
     try {
       parsed = JSON.parse(res.jsonText);
     } catch {
@@ -49,8 +49,8 @@ export class UpsAuthClient {
       });
     }
 
-    const token = parsed.access_token;
-    const expiresIn = Number(parsed.expires_in ?? 0);
+    const token = parsed?.access_token;
+    const expiresIn = Number(parsed?.expires_in ?? 0);
     if (!token || !expiresIn) {
       throw new CarrierError({
         code: "MALFORMED_RESPONSE",
