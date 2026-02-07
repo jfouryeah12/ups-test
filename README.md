@@ -23,11 +23,24 @@ The project includes a comprehensive integration test suite that mocks UPS API r
 npm test
 ```
 
-### Running Type Check & Lint
+### Code Quality
+
+Run format to clean and standardize code style:
+
+```bash
+npm run format
+```
+
+Run lint to check for warnings and errors:
+
+```bash
+npm run lint
+```
+
+Run type check:
 
 ```bash
 npm run typecheck
-npm run lint
 ```
 
 ## Project Structure
