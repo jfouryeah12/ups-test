@@ -1,0 +1,29 @@
+{
+  "RateResponse": {
+    "RatedShipment": [
+      {
+        "Service": { "Code": "03" },
+        "TotalCharges": {
+          "CurrencyCode": "USD",
+          "MonetaryValue": "15.50"
+        },
+        "GuaranteedDelivery": {
+          "BusinessDaysInTransit": "2"
+        },
+        "RatedPackage": {
+          "Weight": "1.5"
+        }
+      },
+      {
+        "Service": { "Code": "02" },
+        "TotalCharges": {
+          "CurrencyCode": "USD",
+          "MonetaryValue": "25.00"
+        },
+        "GuaranteedDelivery": {
+          "BusinessDaysInTransit": "1"
+        }
+      }
+    ]
+  }
+}
