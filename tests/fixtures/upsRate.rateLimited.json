@@ -1,0 +1,10 @@
+{
+  "response": {
+    "errors": [
+      {
+        "code": "250003",
+        "message": "Maximum number of requests exceeded"
+      }
+    ]
+  }
+}
