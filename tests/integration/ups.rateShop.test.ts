@@ -3,7 +3,6 @@ import nock from "nock";
 import fs from "fs";
 import path from "path";
 import { createUpsClient } from "../../src/carriers/ups";
-import { CarrierError } from "../../src/errors/CarrierError";
 import { config } from "../../src/config";
 
 // Load fixtures
