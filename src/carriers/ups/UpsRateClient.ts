@@ -1,11 +1,18 @@
-import { RateRequestSchema, type RateQuote, type RateRequest } from "../../domain/models";
+import {
+  RateRequestSchema,
+  type RateQuote,
+  type RateRequest,
+} from "../../domain/models";
 import { CarrierError } from "../../errors/CarrierError";
 import { config } from "../../config";
 import { HttpClient } from "../../transport/HttpClient";
 import { UpsAuthClient } from "./UpsAuthClient";
 
 export class UpsRateClient {
-  constructor(private http: HttpClient, private auth: UpsAuthClient) {}
+  constructor(
+    private http: HttpClient,
+    private auth: UpsAuthClient,
+  ) {}
 
   async rateShop(req: RateRequest): Promise<RateQuote[]> {
     const parsed = RateRequestSchema.safeParse(req);
@@ -27,19 +34,21 @@ export class UpsRateClient {
         Shipment: {
           Shipper: { Address: mapAddr(req.origin) },
           ShipTo: { Address: mapAddr(req.destination) },
-          Package: [{
-            PackagingType: { Code: "02" },
-            Dimensions: {
-              UnitOfMeasurement: { Code: "CM" },
-              Length: String(req.parcel.lengthCm),
-              Width: String(req.parcel.widthCm),
-              Height: String(req.parcel.heightCm),
+          Package: [
+            {
+              PackagingType: { Code: "02" },
+              Dimensions: {
+                UnitOfMeasurement: { Code: "CM" },
+                Length: String(req.parcel.lengthCm),
+                Width: String(req.parcel.widthCm),
+                Height: String(req.parcel.heightCm),
+              },
+              PackageWeight: {
+                UnitOfMeasurement: { Code: "KGS" },
+                Weight: String(req.parcel.weightKg),
+              },
             },
-            PackageWeight: {
-              UnitOfMeasurement: { Code: "KGS" },
-              Weight: String(req.parcel.weightKg),
-            },
-          }],
+          ],
         },
       },
     };
@@ -52,10 +61,24 @@ export class UpsRateClient {
     });
 
     if (res.status === 429) {
-      throw new CarrierError({ code: "RATE_LIMITED", message: "UPS rate limited", carrier: "UPS", httpStatus: 429, retryable: true, details: res.jsonText });
+      throw new CarrierError({
+        code: "RATE_LIMITED",
+        message: "UPS rate limited",
+        carrier: "UPS",
+        httpStatus: 429,
+        retryable: true,
+        details: res.jsonText,
+      });
     }
     if (res.status === 401 || res.status === 403) {
-      throw new CarrierError({ code: "AUTH_FAILED", message: "UPS unauthorized", carrier: "UPS", httpStatus: res.status, retryable: false, details: res.jsonText });
+      throw new CarrierError({
+        code: "AUTH_FAILED",
+        message: "UPS unauthorized",
+        carrier: "UPS",
+        httpStatus: res.status,
+        retryable: false,
+        details: res.jsonText,
+      });
     }
     if (res.status < 200 || res.status >= 300) {
       throw new CarrierError({
@@ -100,7 +123,9 @@ export class UpsRateClient {
         currency: String(r?.TotalCharges?.CurrencyCode ?? "USD"),
         amount: Number(r?.TotalCharges?.MonetaryValue ?? 0),
       },
-      deliveryDays: r?.GuaranteedDelivery?.BusinessDaysInTransit ? Number(r.GuaranteedDelivery.BusinessDaysInTransit) : undefined,
+      deliveryDays: r?.GuaranteedDelivery?.BusinessDaysInTransit
+        ? Number(r.GuaranteedDelivery.BusinessDaysInTransit)
+        : undefined,
     }));
   }
 }

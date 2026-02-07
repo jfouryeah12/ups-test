@@ -106,7 +106,7 @@ describe("UPS Rate Shop Integration", () => {
     nock(authUrl.origin)
       .post(authUrl.pathname)
       .reply(200, fixtures.tokenSuccess);
-    
+
     nock(rateUrl.origin)
       .post("/api/rating/v1/Rate")
       .reply(200, fixtures.rateSuccess);
@@ -118,11 +118,11 @@ describe("UPS Rate Shop Integration", () => {
       .post("/api/rating/v1/Rate")
       .matchHeader("authorization", "Bearer mock_token_123456789")
       .reply(200, fixtures.rateSuccess);
-    
+
     // Ensure no new auth calls
     const authScope2 = nock(authUrl.origin)
-        .post(authUrl.pathname)
-        .reply(500, "Should not be called");
+      .post(authUrl.pathname)
+      .reply(500, "Should not be called");
 
     await client.rateShop(rateRequest);
 
@@ -137,7 +137,7 @@ describe("UPS Rate Shop Integration", () => {
     nock(authUrl.origin)
       .post(authUrl.pathname)
       .reply(200, fixtures.tokenSuccess);
-    
+
     nock(rateUrl.origin)
       .post("/api/rating/v1/Rate")
       .reply(200, fixtures.rateSuccess);
@@ -166,8 +166,8 @@ describe("UPS Rate Shop Integration", () => {
   it("should handle 429 Rate Limit", async () => {
     // Auth success
     nock(authUrl.origin)
-        .post(authUrl.pathname)
-        .reply(200, fixtures.tokenSuccess);
+      .post(authUrl.pathname)
+      .reply(200, fixtures.tokenSuccess);
 
     // Rate limit
     nock(rateUrl.origin)
@@ -186,8 +186,8 @@ describe("UPS Rate Shop Integration", () => {
   it("should handle 401 Unauthorized", async () => {
     // Auth success (initially)
     nock(authUrl.origin)
-        .post(authUrl.pathname)
-        .reply(200, fixtures.tokenSuccess);
+      .post(authUrl.pathname)
+      .reply(200, fixtures.tokenSuccess);
 
     // Rate: 401
     nock(rateUrl.origin)
@@ -204,22 +204,22 @@ describe("UPS Rate Shop Integration", () => {
   });
 
   it("should handle Malformed Response", async () => {
-      // Auth success
-      nock(authUrl.origin)
-         .post(authUrl.pathname)
-         .reply(200, fixtures.tokenSuccess);
- 
-      // Rate: 200 but bad body
-      nock(rateUrl.origin)
-        .post("/api/rating/v1/Rate")
-        .reply(200, fixtures.malformed); // "Bad Gateway" string
- 
-     const client = createUpsClient();
- 
-     await expect(client.rateShop(rateRequest)).rejects.toMatchObject({
-       code: "MALFORMED_RESPONSE",
-       retryable: true,
-       carrier: "UPS",
-     });
-   });
+    // Auth success
+    nock(authUrl.origin)
+      .post(authUrl.pathname)
+      .reply(200, fixtures.tokenSuccess);
+
+    // Rate: 200 but bad body
+    nock(rateUrl.origin)
+      .post("/api/rating/v1/Rate")
+      .reply(200, fixtures.malformed); // "Bad Gateway" string
+
+    const client = createUpsClient();
+
+    await expect(client.rateShop(rateRequest)).rejects.toMatchObject({
+      code: "MALFORMED_RESPONSE",
+      retryable: true,
+      carrier: "UPS",
+    });
+  });
 });

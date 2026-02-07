@@ -10,9 +10,12 @@ export class UpsAuthClient {
 
   async getToken(): Promise<string> {
     const now = Date.now();
-    if (this.cache && now < this.cache.expiresAtMs - 15_000) return this.cache.token; // 15s skew
+    if (this.cache && now < this.cache.expiresAtMs - 15_000)
+      return this.cache.token; // 15s skew
 
-    const basic = Buffer.from(`${config.UPS_CLIENT_ID}:${config.UPS_CLIENT_SECRET}`).toString("base64");
+    const basic = Buffer.from(
+      `${config.UPS_CLIENT_ID}:${config.UPS_CLIENT_SECRET}`,
+    ).toString("base64");
     const res = await this.http.post(config.UPS_OAUTH_URL, {
       headers: {
         authorization: `Basic ${basic}`,
