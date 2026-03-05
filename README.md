@@ -1,4 +1,4 @@
-# Cybership Carrier Integration
+# UPS Carrier Integration
 
 This repository contains a TypeScript implementation of a UPS carrier integration service, designed for extensibility and production readiness.
 
@@ -106,13 +106,3 @@ Adding a new carrier (e.g., FedEx) would involve:
 3. Adding a factory function similar to `createUpsClient`.
 
 The core domain logic would remain untouched.
-
-## Future Improvements
-
-Given more time, I would:
-
-- **Implement additional operations:** `createLabel`, `track`, `voidLabel` as mostly stubbed in `CarrierClient`.
-- **Enhanced Resiliency:** Implement retry logic with exponential backoff for `RATE_LIMITED` and generic network errors within the `HttpClient`.
-- **Logging:** Integrate a structured logger (e.g., Pino) for better observability.
-- **Metrics:** Add instrumentation to track API latency and error rates.
-- **Caching Strategy:** Use a distributed cache (Redis) for token storage to support multiple instances of the service.
